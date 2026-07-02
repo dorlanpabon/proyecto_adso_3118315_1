@@ -7,13 +7,22 @@ async function init() {
   const dbName = process.env.DB_NAME || 'proyecto_adso_evidencias';
   console.log(`Iniciando configuración de la base de datos: ${dbName}...`);
 
-  // Conexión inicial al servidor MySQL sin especificar base de datos
-  const connection = await mysql.createConnection({
+  // Configuración de la conexión inicial al servidor MySQL
+  const connConfig = {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '3306'),
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-  });
+  };
+
+  // Habilitar SSL para conexiones a la nube (como Aiven)
+  if (process.env.DB_SSL === 'true' || process.env.NODE_ENV === 'production' || connConfig.port !== 3306) {
+    connConfig.ssl = {
+      rejectUnauthorized: false
+    };
+  }
+
+  const connection = await mysql.createConnection(connConfig);
 
   try {
     // 1. Crear base de datos si no existe
