@@ -2,7 +2,7 @@
 require('dotenv').config();
 const mysql = require('mysql2/promise');
 
-const pool = mysql.createPool({
+const poolConfig = {
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '3306'),
   user: process.env.DB_USER || 'root',
@@ -11,6 +11,15 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,     // conexiones simultáneas
   queueLimit: 0
-});
+};
+
+// Aiven y otros proveedores de bases de datos en producción requieren conexiones SSL
+if (process.env.NODE_ENV === 'production' || process.env.DB_SSL === 'true') {
+  poolConfig.ssl = {
+    rejectUnauthorized: false
+  };
+}
+
+const pool = mysql.createPool(poolConfig);
 
 module.exports = pool;
