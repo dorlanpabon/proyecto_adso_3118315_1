@@ -12,7 +12,17 @@ const loginRouter = require('./routes/login');
 const registerRouter = require('./routes/register');
 
 var app = express();
-app.use(cors());
+
+// Configuración avanzada de CORS para permitir cabeceras de autorización y el origen de Netlify / local
+app.use(cors({
+  origin: function (origin, callback) {
+    // Permitir y reflejar dinámicamente cualquier origen para habilitar Netlify y localhost
+    callback(null, true);
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
