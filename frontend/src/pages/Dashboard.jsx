@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
 function Dashboard() {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
@@ -46,7 +48,7 @@ function Dashboard() {
 
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:4000/api/users', {
+      const response = await fetch(`${API_URL}/api/users`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -130,8 +132,8 @@ function Dashboard() {
     }
 
     const url = editingUser 
-      ? `http://localhost:4000/api/users/${editingUser.id}` 
-      : 'http://localhost:4000/api/users';
+      ? `${API_URL}/api/users/${editingUser.id}` 
+      : `${API_URL}/api/users`;
       
     const method = editingUser ? 'PUT' : 'POST';
 
@@ -172,7 +174,7 @@ function Dashboard() {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:4000/api/users/${userToDelete.id}`, {
+      const response = await fetch(`${API_URL}/api/users/${userToDelete.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
